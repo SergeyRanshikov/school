@@ -42,8 +42,18 @@ public class FacultyController {
     }
 
     @GetMapping("/filtered")
-    public Collection<Faculty> getByColor(@RequestParam("cjljr") String color) {
+    public Collection<Faculty> getByColor(@RequestParam("color") String color) {
         return facultyService.getByColor(color);
+    }
+
+    @GetMapping("/by-color-or-name")
+    public Collection<Faculty> getByColorOrName(@RequestParam String search) {
+        return facultyService.getByColorOrName(search, search);
+    }
+
+    @GetMapping("/by-student")
+    public Faculty getByStudent(@RequestParam Long studentId) {
+        return facultyService.getByStudentId(studentId);
     }
 
 }
