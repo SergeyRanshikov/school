@@ -36,8 +36,8 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id) {
-        studentService.remove(id);
+    public Student remove(@PathVariable("id") Long id) {
+        return studentService.remove(id);
     }
 
     @GetMapping("/filtered")

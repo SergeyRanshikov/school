@@ -2,21 +2,21 @@ package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.exception.NotFoundException;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
     private final StudentRepository studentRepository;
+    private final FacultyRepository facultyRepository;
 
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository, FacultyRepository facultyRepository) {
         this.studentRepository = studentRepository;
+        this.facultyRepository = facultyRepository;
     }
 
     public Student getById(Long id) {
@@ -32,7 +32,9 @@ public class StudentService {
 
     }
     public Collection<Student> getByFacultyId(Long facultyId) {
-        return studentRepository.findAllByFaculty_Id(facultyId);
+        return facultyRepository.findById(facultyId)
+                .map(Faculty::getStudent)
+                .orElseThrow(NotFoundException::new);
 
     }
 
@@ -47,16 +49,16 @@ public class StudentService {
     public Student update(Long id, Student student) {
 
         Student existingStudent = studentRepository.findById(id).orElseThrow(NotFoundException::new);
-        Optional.ofNullable(student.getName()).ifPresent(existingStudent::setName);
-        Optional.ofNullable(student.getAge()).ifPresent(existingStudent::setAge);
+        existingStudent.setAge(student.getAge());
+        existingStudent.setName(student.getName());
         return studentRepository.save(existingStudent);
     }
 
 
     public Student remove(Long id) {
-        Student existingStudent = studentRepository.findById(id).orElseThrow(NotFoundException::new);
-        studentRepository.delete(existingStudent);
-        return existingStudent;
+        Student student = studentRepository.findById(id).orElseThrow(NotFoundException::new);
+        studentRepository.delete(student);
+        return student;
     }
 
 }

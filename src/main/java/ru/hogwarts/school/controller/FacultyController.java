@@ -37,8 +37,8 @@ public class FacultyController {
 
     @DeleteMapping("/{id}")
     public Faculty remove(@PathVariable("id") Long id) {
-        facultyService.remove(id);
-        return null;
+
+        return facultyService.remove(id);
     }
 
     @GetMapping("/filtered")
