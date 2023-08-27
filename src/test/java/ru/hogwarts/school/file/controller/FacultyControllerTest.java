@@ -55,7 +55,7 @@ public class FacultyControllerTest {
         ResponseEntity<Faculty> response = createFaculty("math", "red");
         Long facultyId = response.getBody().getId();
 
-        response = template.getForEntity("/faculty" + facultyId, Faculty.class);
+        response = template.getForEntity("/faculty/" + facultyId, Faculty.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getName()).isEqualTo("math");
@@ -82,9 +82,9 @@ public class FacultyControllerTest {
         Long facultyId = response.getBody().getId();
 
 
-        template.put("/faculty"+facultyId, new Faculty(null, "math","blue"));
+        template.put("/faculty/"+facultyId, new Faculty(null, "math","blue"));
 
-        response = template.getForEntity("/faculty" + facultyId, Faculty.class);
+        response = template.getForEntity("/faculty/" + facultyId, Faculty.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getColor()).isEqualTo("blue");
@@ -96,9 +96,9 @@ public class FacultyControllerTest {
         Long facultyId = response.getBody().getId();
 
 
-        template.delete("/faculty"+facultyId);
+        template.delete("/faculty/"+facultyId);
 
-        response = template.getForEntity("/faculty" + facultyId, Faculty.class);
+        response = template.getForEntity("/faculty/" + facultyId, Faculty.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
     }
