@@ -103,7 +103,7 @@ public class FacultyControllerTest {
 
     }
     @Test
-    void filtredByColorOrName() {
+    void filteredByColorOrName() {
         String color = "red";
         createFaculty("math", "red");
         createFaculty("psychology", "blue");
