@@ -78,15 +78,16 @@ public class StudentControllerTest {
     }
     @Test
     void update() {
-        ResponseEntity<Student> response = createStudent("ivan", 20);
+        ResponseEntity<Student> response = createStudent("mari", 21);
         Long studentId = response.getBody().getId();
 
-        template.put("/student/"+studentId, new Student(null, "mari",22));
+        template.put("/student/"+studentId, new Student(null, "ivan", 20));
 
         response = template.getForEntity("/student/" + studentId, Student.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getAge()).isEqualTo(20);
+        assertThat(response.getBody().getName()).isEqualTo("ivan");
     }
     @Test
     void delete() {
@@ -107,15 +108,17 @@ public class StudentControllerTest {
 
 
         ResponseEntity<Collection> response = template
-                .getForEntity("/faculty/by-color-or-name?colorOrName="+age , Collection.class);
+                .getForEntity("/student/by-age?min=20&max=21", Collection.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().size()).isEqualTo(0);
-        Map<String, Integer> next = (HashMap)response.getBody().iterator().next();
-        assertThat(next.get(age)).isEqualTo(20);
+        assertThat(response.getBody().size()).isEqualTo(1);
+
     }
     @Test
     void byFaculty() {
+        createStudent("mari", 20);
+        createStudent("boris", 22);
+
         ResponseEntity<Student> response = createStudent("Maria", 21 );
         Student student = response.getBody();
         Faculty faculty = new Faculty(null, "math", "red");
