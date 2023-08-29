@@ -100,40 +100,37 @@ public class FacultyControllerTest {
         ;
     }
 
-    //    @Test
-//    void filteredByColor() throws Exception {
-//        Faculty faculty = new Faculty(1L, "math", "red");
-//        when(facultyRepository.findAllByColorIgnoreCaseOrNameIgnoreCase("math", "math")
-//                .thenReturn(Arrays.asList(
-//                        new Faculty(1L, "math", "red"),
-//                        new Faculty(1L, "meh", "blue")
-//                )));
-//
-//
-//        mockMvc.perform(MockMvcRequestBuilders.get("/faculty/by-color-or-name?color=red")
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$").isArray())
-//                .andExpect(jsonPath("$[0].name").value("math"))
-//                .andExpect(jsonPath("$[1].name").value("meh"))
-//        ;
-//    }
-//    @Test
-//    void findByStudent() throws Exception {
-//        List<Faculty> faculties = Arrays.asList(
-//                new Faculty(1L, "math", "red"),
-//                new Faculty(1L, "meh", "blue"));
-//        Student student = new Student(1L, "boris", 20);
-//        student.setFaculty(faculties);
-//
-//        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
-//
-//        mockMvc.perform(MockMvcRequestBuilders.get("/faculty/by-student?studentId=1")
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$").isArray());
-//    }
+        @Test
+    void filteredByColor() throws Exception {
+        Faculty faculty = new Faculty(1L, "math", "red");
+        when(facultyRepository.findAllByColor("red")
+                .thenReturn(Arrays.asList(
+                        new Faculty(1L, "math", "red"),
+                        new Faculty(1L, "meh", "blue"))));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/faculty/by-color-or-name?color=red")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.color").value("red"));
+    }
+
+
+    @Test
+    void findByStudent() throws Exception {
+        List<Faculty> faculties = Arrays.asList(
+                new Faculty(1L, "math", "red"),
+                new Faculty(2L, "meh", "blue"));
+        Student student = new Student(1L, "boris", 20);
+        student.setFaculty((Faculty) faculties);
+
+        when(facultyRepository.findByStudent_Id(1L));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/faculty/by-student?studentId=1")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.color").value("red"));
+    }
 
 }
