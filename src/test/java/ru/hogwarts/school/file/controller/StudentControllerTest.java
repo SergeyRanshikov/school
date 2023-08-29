@@ -121,18 +121,22 @@ public class StudentControllerTest {
 
         ResponseEntity<Student> response = createStudent("Maria", 21 );
         Student student = response.getBody();
+
         Faculty faculty = new Faculty(null, "math", "red");
-        faculty.setStudent((List<Student>) student);
+        faculty.setStudent(List.of(student));
+
+
         ResponseEntity<Faculty> facultyResponseEntity = template
                 .postForEntity("/faculty/", faculty, Faculty.class);
         assertThat(facultyResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         Long facultyId = facultyResponseEntity.getBody().getId();
 
-        response = template
-                .getForEntity("/student/by-faculty?facultyId=" + facultyId, Student.class);
+        ResponseEntity<Student[]> responses = template
+                .getForEntity("/student/by-faculty?facultyId=" + facultyId, Student[].class);
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody()).isEqualTo(faculty);
+        assertThat(response.getBody()).isEqualTo(student);
     }
 
 
