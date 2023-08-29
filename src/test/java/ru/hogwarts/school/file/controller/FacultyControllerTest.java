@@ -19,6 +19,7 @@ import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,28 +104,26 @@ public class FacultyControllerTest {
         @Test
     void filteredByColor() throws Exception {
         Faculty faculty = new Faculty(1L, "math", "red");
-        when(facultyRepository.findAllByColor("red")
+        when(facultyRepository.findAllByColor("red"))
                 .thenReturn(Arrays.asList(
                         new Faculty(1L, "math", "red"),
-                        new Faculty(1L, "meh", "blue"))));
+                        new Faculty(2L, "meh", "blue")));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/faculty/by-color-or-name?color=red")
+        mockMvc.perform(MockMvcRequestBuilders.get("/faculty/filtered?color=red")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.color").value("red"));
+                .andExpect(jsonPath("$[0].color").value("red"));
     }
 
 
     @Test
     void findByStudent() throws Exception {
-        List<Faculty> faculties = Arrays.asList(
-                new Faculty(1L, "math", "red"),
-                new Faculty(2L, "meh", "blue"));
+        Faculty faculty = new Faculty(1L, "math", "red");
         Student student = new Student(1L, "boris", 20);
-        student.setFaculty((Faculty) faculties);
+        student.setFaculty((Faculty) faculty);
 
-        when(facultyRepository.findByStudent_Id(1L));
+        when(facultyRepository.findByStudent_Id(1L)).thenReturn(Optional.of(faculty));;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/faculty/by-student?studentId=1")
                         .accept(MediaType.APPLICATION_JSON)
