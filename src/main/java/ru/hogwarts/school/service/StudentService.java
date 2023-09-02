@@ -5,10 +5,7 @@ import ru.hogwarts.school.exception.NotFoundException;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,5 +55,15 @@ public class StudentService {
         studentRepository.delete(existingStudent);
         return existingStudent;
     }
+    public long count() {
+        return studentRepository.countStudents();
+    }
 
+    public double average() {
+        return studentRepository.averageAge();
+    }
+
+    public List<Student> getLastStudents(int quantity) {
+        return studentRepository.findLastStudents(quantity);
+    }
 }
