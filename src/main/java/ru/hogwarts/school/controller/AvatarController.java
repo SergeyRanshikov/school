@@ -1,6 +1,8 @@
 package ru.hogwarts.school.controller;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +12,8 @@ import ru.hogwarts.school.dto.AvatarDto;
 import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.service.AvatarService;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -21,6 +21,8 @@ import java.util.List;
 @RequestMapping("/avatar")
 public class AvatarController {
     private final AvatarService avatarService;
+    public static final Logger logger = LoggerFactory.getLogger(AvatarController.class);
+
 
     public AvatarController(AvatarService avatarService) {
         this.avatarService = avatarService;
@@ -32,7 +34,7 @@ public class AvatarController {
             Long avatarId = avatarService.save(studentId, multipartFile);
             return ResponseEntity.ok(avatarId);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("failed to save avatar with id = " + studentId,e);
             return ResponseEntity.badRequest().build();
         }
     }
